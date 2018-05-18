@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Библиотека</title>
+</head>
+<body>
+    <div id="app"></div>
+        
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+    
+    <script type="text/babel">
+    const Router = ReactRouterDOM.BrowserRouter;
+    const Route = ReactRouterDOM.Route;
+    const Switch = ReactRouterDOM.Switch;
+    const NavLink = ReactRouterDOM.NavLink;
+   // var phones = JSON.parse(phone);
+
+    //var phones=JSON.parse(JSON.parse(fs.readFileSync('./phone.json')));
+    const books =[
+    {
+	id:0,
+	title: "Тёмная башня",
+	description: "Книга про стрелка",
+	authors:"Стивен Кинг",
+	year: 1989
+ },
+  {
+	id:1,
+	title: "Хрипты безумия",
+    description: " роман американского писателя в жанре ужасов и фантастики Говарда Филлипса Лавкрафта. ",
+	authors:["Говард Филлипс Лавкрафт"],
+	year: 1976
+ },
+  {
+	id:2,
+	title: "Американские боги",
+	description: "Про богов",
+	authors:"Нил Геймон",
+	year: 1995
+ },
+  {
+	id:3,
+	title: "Учение смерти",
+	description: "Там про отношения людей",
+	authors:"Терри Пратчет",
+	year: 1991
+	}  
+                ];
+ 
+    class Home extends React.Component{
+        render(){
+
+            return <div>
+                <NavLink to="/books">Получить список всех книг</NavLink>
+                    </div>;;
+        }
+    }
+    class NotFound extends React.Component{
+        render(){
+            return <h2>Ресурс не найден</h2>;
+        }
+    }
+     class BookList extends React.Component{
+        render(){
+            
+            return <div>
+                    <h2>Список книг в библиотеке</h2>
+                    <ul>
+                    {
+                        books.map(function(item){
+                            return <li key={item.id}>
+                                     <NavLink to={`/books/${item.id}`}>{item.title}</NavLink>
+                                   </li>
+                        })
+                    }
+                </ul>
+            </div>;
+        }
+        
+    }
+    class Book extends React.Component{
+        render(){
+            const prodId = this.props.match.params.id;
+            let book;
+            for(var i=0; i<books.length; i++){
+                if(books[i].id==prodId){
+                    book = books[i];
+                    break;
+                }
+            }
+            if(book===undefined)
+                return <h2>Товар не найден</h2>;
+            else
+                return <h2>Название книги: {book.title}
+                <p>Описание: {book.description}</p>
+                   Автор: {book.authors}
+                       <p> Год издания:{book.year}</p>
+                        </h2>;
+        }
+    }
+    class Books extends React.Component{
+        render(){
+            return <div>
+                        <Switch>
+                            <Route exact path="/books" component={BookList} />
+                            <Route path="/books/:id" component={Book} />
+                        </Switch>
+                    </div>;
+        }
+    }
+    ReactDOM.render(
+        <Router>
+            <div>
+                <Switch>
+                    <Route exact path="/" component={Home} />
+                    <Route path="/books" component={Books} />
+                    <Route component={NotFound} />
+                </Switch>
+            </div>
+        </Router>,
+        document.getElementById("app")
+    )
+    </script>
+</body>
+</html>
